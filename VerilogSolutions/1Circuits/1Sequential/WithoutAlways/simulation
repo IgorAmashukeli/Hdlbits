@@ -1,0 +1,38 @@
+#! /usr/bin/vvp
+:ivl_version "12.0 (stable)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision + 0;
+:vpi_module "/usr/lib64/ivl/system.vpi";
+:vpi_module "/usr/lib64/ivl/vhdl_sys.vpi";
+:vpi_module "/usr/lib64/ivl/vhdl_textio.vpi";
+:vpi_module "/usr/lib64/ivl/v2005_math.vpi";
+:vpi_module "/usr/lib64/ivl/va_math.vpi";
+S_0x563f20eaf6d0 .scope module, "testbench" "testbench" 2 16;
+ .timescale 0 0;
+v0x563f20ec0330_0 .net "clk_out", 0 0, L_0x563f20ec06b0;  1 drivers
+S_0x563f20eaf860 .scope module, "uut" "ring_oscillator" 2 20, 2 1 0, S_0x563f20eaf6d0;
+ .timescale 0 0;
+    .port_info 0 /OUTPUT 1 "out";
+L_0x563f20ec03d0/d .functor NOT 1, L_0x563f20ec06b0, C4<0>, C4<0>, C4<0>;
+L_0x563f20ec03d0 .delay 1 (5,5,5) L_0x563f20ec03d0/d;
+L_0x563f20ec0530/d .functor NOT 1, L_0x563f20ec03d0, C4<0>, C4<0>, C4<0>;
+L_0x563f20ec0530 .delay 1 (5,5,5) L_0x563f20ec0530/d;
+L_0x563f20ec06b0/d .functor NOT 1, L_0x563f20ec0530, C4<0>, C4<0>, C4<0>;
+L_0x563f20ec06b0 .delay 1 (5,5,5) L_0x563f20ec06b0/d;
+v0x563f20e76470_0 .net "n1", 0 0, L_0x563f20ec03d0;  1 drivers
+v0x563f20ec0190_0 .net "n2", 0 0, L_0x563f20ec0530;  1 drivers
+v0x563f20ec0250_0 .net "out", 0 0, L_0x563f20ec06b0;  alias, 1 drivers
+    .scope S_0x563f20eaf6d0;
+T_0 ;
+    %vpi_call 2 25 "$monitor", "Time: %0d, clk_out: %b", $time, v0x563f20ec0330_0 {0 0 0};
+    %vpi_call 2 29 "$dumpfile", "dump.vcd" {0 0 0};
+    %vpi_call 2 31 "$dumpvars", 32'sb00000000000000000000000000000000, S_0x563f20eaf6d0 {0 0 0};
+    %delay 100, 0;
+    %vpi_call 2 34 "$finish" {0 0 0};
+    %end;
+    .thread T_0;
+# The file index is used to find the file name in the following table.
+:file_names 3;
+    "N/A";
+    "<interactive>";
+    "ring_osc.v";
