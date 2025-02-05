@@ -40,63 +40,37 @@ module top_module (
     assign q = (pos_q && !pos_ns_out) || (neg_q && !neg_ns_out);
 
     // let's proof it is correct
+    // suppose we have a rising clock edge (0 -> 1)
+    // as we know at the end of rising edge:
+    // pos_q = d_current
+    // as we also know at the end of rising edge:
+    // neg_q = q_current
+    
+    // pos_ns_out = NAND(d_current, clk) = NAND(d_current, 1) = !d_current
+    // !pos_ns_out = d_current
+    // pos_q && !pos_ns_out = d_current && d_current
+
+    // neg_ns_out = NAND(q_current, !clk) = NAND(q_current, 0) = 1
+    // !neg_ns_out = 0
+    // neg_q && !neg_ns_out = q_current && 0 = 0
+    // q = d_current || 0 = d_current
+
+    // suppose, we have a falling clock edge (1 -> 0)
+    // as we know at the end of falling edge
+    // neg_q = d_current
+    // pos_q = q_current
+    // neg_ns_out = NAND(d_current, !clk) = NAND(d_current, 1) = !d_current
+    // !neg_ns_out = d_current
+    // pos_ns_out = NAND(q_current, clk) = NAND(q_current, 0) = 1
+    // !pos_ns_out = 0
+    // (pos_q && !pos_ns_out) = q_current && 0 = 0
+    // (neg_q && !neg_ns_out) = d_current && d_current = d_current
+    // q = d_current || 0 = d_current
 
 
-
-    // on rising/falling edge
-    // one of the flip flops returns q_i, and the other returns d_current
-    // the one that outputs d_current has !ns = 1, the one that outpus q_i has !ns = 0
-    // (
-    // because: 
-    // if edge was 0->1, the positive flip flop will have latch input as clk = 1, so !ns = 1
-    // and negative flip flop will have latch input as !clk = 0, so !ns = 0
-    //
-    // if edge was 1->0, the negative flip flop will have latch input as !clk = 1, so !ns = 0
-    // and positive flip flop will have latch input as clk = 0, so !ns = 0
-    //)
-    // and, after substituion of the !ns we have
-    // q = (q_i && 0) || (d_current && 1) = 0 || d_current = d_current
-    // on high/low value of the clock
-    // both flip flops return the previous value
-
-    // let's look at tick and tock of the clock
-    // at that moment, the flip flop that just had the edge
-    // (positive for hight and negative for low)
-    // only changes the master input clock
-    // the clock for the slave remains the same 
-    // (0->1 edge has the same slave clock input as 1, while 1->0 edge has the same slave clock input as 0)
-    // that means that the clock that just had edge has !ns = 1
-    // and the clock that didn't have edge has !ns = 0, because it triggers on the opposite edge
-    // (0->1 edge has different slave clock, compared to 1, and 1->0 edge has also different slave clock, compared to 0)
-    // at high(tock)/low(tick), suppose, q_i is that the flip flop that acted last outputed and q_j is the one
-    // that the one that was before outputed
-    // then, !ns_i = 1 and !ns_j = 0, according to the statements above
-    // therefore
-    // 
-    // q = (q_i && 1) || (q_j && 0) = q_i || 0 = q_i
-
-    // Truth table
-    // clk     q
-    //  0      q of the last flip flop
-    //  1      q of the last flip flop
-    // 0->1    d
-    // 1->0    d
-
-    // let's note that the q of the last flip flop
-    // is the value that was outputed by the whole dual edge flip flop on the last edge
-    // (it is q for the whole dual edge flip flop)
-    // 
-    // therefore
-    //
-    // Truth table
-    // clk     q
-    //  0      previous q (last q, outputed by the whole dual edge flip flop)
-    //  1      previous q (last q, outputed by the whole dual edge flip flop)
-    // 0->1    d
-    // 1->0    d
-
-    // Therefore, the dual edged flip flop is correct
-endmodule
+    // now, when clk = 1 (for example), the output is the same as it was just after the rising edge
+    // (d_current, found on the rising edge)
+    // because the output of slave data latches in each dff won't change throughout the same clk value
 
 
 
